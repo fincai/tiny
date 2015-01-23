@@ -13,25 +13,40 @@ typedef enum {
 
 char tokenString[MAXTOKENLEN+1];
 
-#define BUFLEN 256
+static int buflen = 256;
 
-static char lineBuf[BUFLEN];
+static char *lineBuf = NULL;
 static int linepos = 0;
 static int bufsize = 0;
 
 static char getNextChar() 
 {
     if (! (linepos < bufsize)) {
-        if (fgets(lineBuf, BUFLEN-1, source)) {
-            ++lineno;
-            bufsize = strlen(lineBuf);
+        char c;
+        if (lineBuf) {
+            free(lineBuf);
+            lineBuf = NULL;
+            bufsize = 0;
+        }
+        while ((c = fgetc(source)) != '\n' && c != EOF) {
+           lineBuf = realloc(lineBuf, bufsize + 1);
+           lineBuf[bufsize] = c;
+           ++bufsize;
+        }
+        if (c == '\n') {
+            lineBuf = realloc(lineBuf, bufsize+2);
+            lineBuf[bufsize] = '\n';
+            lineBuf[++bufsize] = '\0';
             linepos = 0;
+            ++lineno;
+            if (EchoSource) fprintf(listing, "%d: %s", lineno, lineBuf);
             return lineBuf[linepos++];
-        } else
+        } else {   /* c == EOF */
+            if (lineBuf) free(lineBuf);
             return EOF;
+        }
     } else
         return lineBuf[linepos++];
-    
 }
 
 static void ungetNextChar() 
