@@ -23,7 +23,7 @@
 #define MAXRESERVED 8
 
 typedef enum {
-    ENDFILE, ERROR,
+    ERROR, ENDFILE,
     /* reserved words */
     IF, THEN, ELSE, END, REPEAT, UNTIL, READ, WRITE,
     /* multicharacter tokens */
