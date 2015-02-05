@@ -5,9 +5,11 @@
 
 #include "globals.h"
 
-#define NO_PARSE TRUE
+#define NO_PARSE FALSE
 #define NO_ANALYZE TRUE
 #define NO_CODEGEN TRUE 
+
+#include "util.h"
 #if NO_PARSE
 #include "scan.h"
 #else
@@ -29,6 +31,7 @@ FILE *listing;
 /* allocate tracing flags */
 int EchoSource = TRUE;
 int TraceScan = TRUE;
+int TraceParse = TRUE;
 
 int Error = FALSE;
 
@@ -39,6 +42,7 @@ int main(int argc, char *argv[ ])
         exit(1);
     }
     char *pgm = malloc((strlen(argv[1]) + 5) * sizeof(char));
+    TreeNode *syntaxTree;
     strcpy(pgm, argv[1]);
     if (strchr(pgm, '.') == NULL)
         strcat(pgm, ".tny");
@@ -53,10 +57,13 @@ int main(int argc, char *argv[ ])
 
 #if NO_PARSE
     while (getToken() != ENDFILE) ;
+#else
+    syntaxTree = parse();
+    if (TraceParse) {
+        fprintf(listing, "\nSyntax tree:\n");
+        printTree(syntaxTree);
+    }
 #endif
     
     return 0;    
 }
-
-
-
