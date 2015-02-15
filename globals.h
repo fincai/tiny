@@ -22,6 +22,9 @@
 /* The number of reserved words */
 #define MAXRESERVED 8
 
+#define NO_BISON TRUE 
+
+#if NO_BISON
 typedef enum {
     ERROR, ENDFILE,
     /* reserved words */
@@ -31,6 +34,16 @@ typedef enum {
     /* special symbols */
     ASSIGN, EQ, LT, PLUS, MINUS, TIMES, OVER, LPAREN, RPAREN, SEMI
 } TokenType;
+#else
+typedef int TokenType;
+#ifndef IN_BISON_PARSER
+#include "parser.tab.h"
+#define ENDFILE 0
+#endif
+#endif
+
+
+
 
 extern FILE* source;
 extern FILE* listing;

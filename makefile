@@ -1,5 +1,7 @@
 all:
 	gcc main.c util.c scan.c parse.c -o tiny
+pbison:
+	gcc -ansi main.c util.c scan.c parser.tab.c -o tiny
 
 modified: main.o util.o scan.o parse.o
 		  gcc main.o util.o scan.o parse.o -o tiny
