@@ -88,6 +88,8 @@ extern int TraceScan;
 
 extern int TraceParse;
 
+extern int TraceAnalyze;
+
 extern int Error;
 
 #endif

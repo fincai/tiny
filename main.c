@@ -6,7 +6,7 @@
 #include "globals.h"
 
 #define NO_PARSE FALSE
-#define NO_ANALYZE TRUE
+#define NO_ANALYZE FALSE
 #define NO_CODEGEN TRUE 
 
 #include "util.h"
@@ -32,6 +32,7 @@ FILE *listing;
 int EchoSource = TRUE;
 int TraceScan = TRUE;
 int TraceParse = TRUE;
+int TraceAnalyze = TRUE;
 
 int Error = FALSE;
 
@@ -63,6 +64,15 @@ int main(int argc, char *argv[ ])
         fprintf(listing, "\nSyntax tree:\n");
         printTree(syntaxTree);
     }
+#if !NO_ANALYZE
+    if (!Error) {  // No error occurred during parsing
+       fprintf(listing, "\nBuilding Tymbol Table...\n");
+       buildSymtab(syntaxTree);
+       fprintf(listing, "\nChecking Types...\n");
+       typeCheck(syntaxTree);
+       fprintf(listing, "\nType Checking Finished\n");
+    }
+#endif
 #endif
     
     return 0;    
